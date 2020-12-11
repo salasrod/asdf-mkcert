@@ -1,13 +1,22 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+  push:
+    paths-ignore:
+      - "**.md"
+  schedule:
+    - cron: 0 0 * * 5
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest]
-        version: [1.4.1] # Only => 1.4.1 has the -version flag
+        os: 
+          - ubuntu-latest
+          - macOS-latest
 
     runs-on: ${{ matrix.os }}
 
