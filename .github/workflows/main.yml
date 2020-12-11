@@ -1,24 +1,32 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+  push:
+    paths-ignore:
+      - "**.md"
+  schedule:
+    - cron: 0 0 * * 5
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest]
-        version: [1.4.1] # Only => 1.4.1 has the -version flag
+        os: 
+          - ubuntu-latest
+          - macOS-latest
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Install asdf
-        run: |
-          git clone https://github.com/asdf-vm/asdf.git $HOME/asdf --branch v0.8.0
-      - name: Test the plugin
-        run: |
-          . $HOME/asdf/asdf.sh
-          GITHUB_API_TOKEN=${{secrets.GITHUB_TOKEN}} asdf plugin-test mkcert $GITHUB_WORKSPACE 'mkcert --version' --asdf-tool-version ${{matrix.version}} --asdf-plugin-gitref $GITHUB_SHA
+        uses: asdf-vm/actions/plugin-test@v1
+        with:
+          command: mkcert --version
+        env:
+          GITHUB_API_TOKEN: ${{ github.token }}
