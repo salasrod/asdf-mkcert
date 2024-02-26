@@ -76,7 +76,7 @@ get_arch() {
 get_filename() {
   local version="$1"
   local platform="$2"
-  local binary_name="$4"
+  local binary_name="$3"
 
   echo "${binary_name}-v${version}-${platform}"
 }
