@@ -33,7 +33,7 @@ install_tool() {
   local download_url
   local download_path
 
-  platform=$(get_platform)
+  platform=$(get_platform)-$(get_arch)
   download_url=$(get_download_url "$version" "$platform" "$binary_name")
   download_path="$tmp_download_dir/"$(get_filename "$version" "$platform" "$binary_name")
 
@@ -54,10 +54,23 @@ install_tool() {
 get_platform() {
     if [[ "$(uname)" == "Linux" ]]
     then
-        echo "linux-amd64"
+        echo "linux"
     else
-        echo "darwin-amd64"
+        echo "darwin"
     fi
+}
+
+get_arch() {
+  local arch=$(uname -m)
+
+  case $arch in
+    amd64 | x86_64)
+      echo 'amd64'
+      ;;
+    arm64 | aarch64)
+      echo 'arm64'
+      ;;
+  esac
 }
 
 get_filename() {
